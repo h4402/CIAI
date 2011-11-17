@@ -2,58 +2,49 @@
 #define _COMMON_H_
 
 #include <semLib.h>
-#include <msqLib.h>
+#include <msgQLib.h>
 #include <wdLib.h>
+#include <time.h>
+#include <string.h>
+#include <taskLib.h>
+#include <sysLib.h>
 
-/**
- * DÃ©finitions de types.
- */
-#define TRUE 1
-#define FALSE 0
- 
-#define Boolean int
+typedef enum {
+	ERR_UNKNOWN,
+	ERR_ABS_CARTON,
+	ERR_PIECES_RATE,
+	ERR_PRINTER,
+	ERR_ABS_PALETTE,
+	ERR_FILE_CARTONS,
+	ERR_AU,
+	ERR_NOT_ENOUGHT,
+	ERR_PASTIQ
+}errorsType;/* Sera caste en UINT8 */
 
-/**
- * Structures de Boites aux Lettres
- * et de toutes les donnÃ©es manipulÃ©es.
- */
- 
-enum TypePiece {
-	Piece_1,
-	Piece_2
-};
+typedef enum {
+	MSG_UNKNOWN,
+	MSG_PROD_CFG,
+	MSG_PROD_ORD,
+	MSG_EXP_ORD,
+	MSG_ERR_SOLV,
+	MSG_ERR_SIGN,
+	MSG_PAL_PLEINE,
+	MSG_EXP_RES,
+	MSG_END_OF_PROD,/* Pas de datagramme associee */
+	MSG_CART_PLUS, /*Carton plein*/
+	MSG_CART_MOINS /*Carton sur palette*/
+}msgTypes;/* Sera caste en UINT8 */
 
-typedef struct {
-	int numLot;
-	TypePiece type;
-	int nbPiece;
-	int codeOp;
-	int time;
-	int nbPieceDefect;
-} Carton;
+#define TIMEOUT_CART 42
+#define TIMEOUT_PIE 42
+#define TIMEOUT_PAL 42
+#define TIMEOUT_FIL 42
 
-/* TODO: Quoi mettre? */
-typedef struct {
-	int nbALarrache;
-} Palette;
-
-typedef struct {
-	int x;
-	int y;
-	int z;
-} Dimension;
-
-typedef struct {
-	TypePiece type;
-	Dimension dim;
-	Boolean bon;
-} Piece;
-
-/**
- * Constantes pratiques pour paramÃ©trer le programme.
- */
+#define MAX_CARTON_ATTENTE 10
 #define DEFAULT_STACK_SIZE 1000
 #define DEFAULT_PRIO 42
+
+#define MAX_PRESENCE_PIECE 100
 
 #define DEFAULT_PROBA_PIECE_DEFECT_SUR_1000 10
 
@@ -62,7 +53,7 @@ typedef struct {
 #define TEMPS_ENTRE_PALETTE 10
 #define TEMPS_ENTRE_PIECE 10
 
-/* PrioritÃ© de chaque tache */
+/* Priorité de chaque tache */
 #define PRIO_REMPLIR_CARTON DEFAULT_PRIO
 #define PRIO_PRESENCE_CARTON DEFAULT_PRIO
 #define PRIO_PRESENCE_PALETTE DEFAULT_PRIO
@@ -87,59 +78,136 @@ typedef struct {
 #define MAX_PRESENCE_PALETTE 42
 #define MAX_ETIQUETTE 42
 
-/**
- *  Taches spÃ©cifiques Ã  la simulation 
- */
-extern void taskPresCart(MSQ_ID BalPresCart);
 
-extern void taskPresPalette(MSQ_ID BalPresPal);
-
-extern void taskPresPiece(int probaSurMille);
-
-extern void taskImprimante(MSQ_ID BalImp);
-
-/** 
- * Taches RÃ©Ã©lles 
- */
-extern void taskRempCart(MSQ_ID BalPresCart, MSQ_ID BalImp, SEM_ID SemLongFileAttente, WDOG_ID wdCart);
-
-extern void taskGestErreur();
-
-extern void taskGestArrUrg();
-
-extern void taskRempPal(MSQ_ID BalPresPal, SEM_ID SemLongFileAttente);
 
 /**
- * Handler rÃ©Ã©els (utilisÃ©s en simulation dans notre application.
+ * Définitions de types.
+ */
+#define Boolean int
+
+/**
+ * Structures de Boites aux Lettres
+ * et de toutes les données manipulées.
  */
  
-extern void handlerCapteurDim(Dimension dim);
+typedef enum {
+	Piece_1,
+	Piece_2
+} TypePiece;
 
-extern void handlerArretUrgence();
+typedef struct {
+	UINT16 nbPieceParCarton;
+	UINT16 nbCartonParPalette;
+	UINT16 nbPalettes1;
+	UINT16 nbPalettes2;
+	UINT16 seuilDefectParCarton;
+	UINT16 numLot1;
+	UINT16 numLot2;
+	char numOp[5];
+} Prod;
+
+typedef struct {
+	int numLot;
+	TypePiece type;
+	int nbPiece;
+	int codeOp;
+	time_t temps;
+	int nbPieceDefect;
+} Carton;
+
+typedef struct {
+	int x;
+	int y;
+	int z;
+} Dimension;
+
+typedef struct {
+	TypePiece type;
+	Dimension dim;
+	Boolean bon;
+} Piece;
+
+typedef struct
+{
+	UINT8 errNo;
+	UINT8 reprise;
+}MsgErrSolv;
+
+typedef struct
+{
+	UINT8 errNo;
+	time_t temps;
+}MsgErrSign;
+
+typedef enum {
+	PALETTE,
+	CARTON
+} TypeMessage;
+
+typedef struct
+{
+	UINT8 paletteOuCarton; /* Carton ou palette */
+	time_t temps;
+	UINT16 numLot;
+}MsgFin;
+
+typedef struct {
+	int nbPal1;
+	int nbPal2;
+} NbPal;
+
 
 /**
- * Autres procÃ©dures (pour Ã©viter la redondance de code).
+ * Zone de mémoire partagées.
  */
-
-extern void envoieMessage();
-
-extern void envoieErreur();
-
-/**
- * Zone de mÃ©moire partagÃ©es.
- */
-static int LongFilAttente;
+static int LongFileAttente;
 
 static Boolean ClapetOuvert;
 
+static Prod nbProd;
+
+static NbPal nbPal; 
+
+
 /**
- * SÃ©maphores partagÃ©s.
- * Ces sÃ©maphores sont globaux car ils sont utilisÃ©s
- * par des procÃ©dures qui peuvent Ãªtre appelÃ©es par
- * toutes les taches, nous ne les passons donc pas en paramÃ¨tres.
+ * Constantes pratiques pour paramétrer le programme.
+ */
+
+/**
+ * Sémaphores partagés.
+ * Ces sémaphores sont globaux car ils sont utilisés
+ * par des procédures qui peuvent être appelées par
+ * toutes les taches, nous ne les passons donc pas en paramètres.
+ */
+
+MSG_Q_ID BalPresPie;
+
+MSG_Q_ID BalMessages;
+
+MSG_Q_ID BalPresCart;
+
+MSG_Q_ID BalPresPal;
+
+MSG_Q_ID BalImp;
+
+/**
+ * Sémaphores partagés.
+ * Ces sémaphores sont globaux car ils sont utilisés
+ * par des procédures qui peuvent être appelées par
+ * toutes les taches, nous ne les passons donc pas en paramètres.
  */
 SEM_ID SemErrTraitee;
 
 SEM_ID SemArrUrgence;
+
+SEM_ID SemInitProd;
+
+SEM_ID SemLongFileAttente;
+
+SEM_ID SemPresPal;
+
+SEM_ID SemNbPal;
+
+SEM_ID SemFinProd;
 
 #endif
