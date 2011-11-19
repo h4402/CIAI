@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'widgetcommande.ui'
+** Form generated from reading UI file 'widgetcommande.ui'
 **
-** Created: Wed 16. Nov 10:50:30 2011
-**      by: Qt User Interface Compiler version 4.5.1
+** Created: Sat Nov 19 17:39:23 2011
+**      by: Qt User Interface Compiler version 4.7.4
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_WIDGETCOMMANDE_H
@@ -76,7 +76,6 @@ public:
         nNbT1->setText(QApplication::translate("WidgetCommande", "nbT1", 0, QApplication::UnicodeUTF8));
         nNbT2->setText(QApplication::translate("WidgetCommande", "nbT2", 0, QApplication::UnicodeUTF8));
         bSend->setText(QApplication::translate("WidgetCommande", "Exp\303\251dier", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(WidgetCommande);
     } // retranslateUi
 
 };

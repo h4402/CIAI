@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'fencommande.ui'
+** Form generated from reading UI file 'fencommande.ui'
 **
-** Created: Wed 16. Nov 10:44:06 2011
-**      by: Qt User Interface Compiler version 4.5.1
+** Created: Sat Nov 19 17:39:23 2011
+**      by: Qt User Interface Compiler version 4.7.4
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_FENCOMMANDE_H
@@ -141,7 +141,6 @@ public:
         label_4->setText(QApplication::translate("FenCommande", "Code client :", 0, QApplication::UnicodeUTF8));
         bOk->setText(QApplication::translate("FenCommande", "OK", 0, QApplication::UnicodeUTF8));
         bCancel->setText(QApplication::translate("FenCommande", "Annuler", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(FenCommande);
     } // retranslateUi
 
 };

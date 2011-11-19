@@ -43,23 +43,7 @@ void Communication::traiterErreur(errorsType numErr,
 
 }
 
-void receptionErreur(errorsType numErr)
-{
-    //afficher une boîte de dialogue
-}
-
-void receptionEtatCommande(quint16 numCommande,
-                           bool expediee)
-{
-
-}
-
-void ecrireLog(QString message)
-{
-
-}
-
-void nouvellesDonnees()
+void Communication::nouvellesDonnees()
 {
 
 }

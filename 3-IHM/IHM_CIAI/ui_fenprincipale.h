@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'fenprincipale.ui'
+** Form generated from reading UI file 'fenprincipale.ui'
 **
-** Created: Wed 16. Nov 11:18:33 2011
-**      by: Qt User Interface Compiler version 4.5.1
+** Created: Sat Nov 19 17:39:23 2011
+**      by: Qt User Interface Compiler version 4.7.4
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_FENPRINCIPALE_H
@@ -87,7 +87,7 @@ public:
         horizontalLayoutWidget->setGeometry(QRect(160, 640, 491, 41));
         boutonLayout = new QHBoxLayout(horizontalLayoutWidget);
         boutonLayout->setSpacing(6);
-        boutonLayout->setMargin(11);
+        boutonLayout->setContentsMargins(11, 11, 11, 11);
         boutonLayout->setObjectName(QString::fromUtf8("boutonLayout"));
         boutonLayout->setContentsMargins(0, 0, 0, 0);
         bRunProd = new QPushButton(horizontalLayoutWidget);
@@ -110,7 +110,7 @@ public:
         verticalLayoutWidget->setGeometry(QRect(50, 420, 701, 211));
         tComm = new QVBoxLayout(verticalLayoutWidget);
         tComm->setSpacing(6);
-        tComm->setMargin(11);
+        tComm->setContentsMargins(11, 11, 11, 11);
         tComm->setObjectName(QString::fromUtf8("tComm"));
         tComm->setContentsMargins(0, 0, 0, 0);
 
@@ -131,7 +131,6 @@ public:
         bRunProd->setText(QApplication::translate("FenPrincipale", "Lancer production", 0, QApplication::UnicodeUTF8));
         bNewCom->setText(QApplication::translate("FenPrincipale", "Nouvelle commande", 0, QApplication::UnicodeUTF8));
         bExpCom->setText(QApplication::translate("FenPrincipale", "Exp\303\251dier commande", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(FenPrincipale);
     } // retranslateUi
 
 };

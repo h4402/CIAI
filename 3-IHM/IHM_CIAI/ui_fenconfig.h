@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading ui file 'fenconfig.ui'
+** Form generated from reading UI file 'fenconfig.ui'
 **
-** Created: Wed 16. Nov 10:44:07 2011
-**      by: Qt User Interface Compiler version 4.5.1
+** Created: Sat Nov 19 17:39:23 2011
+**      by: Qt User Interface Compiler version 4.7.4
 **
-** WARNING! All changes made in this file will be lost when recompiling ui file!
+** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_FENCONFIG_H
@@ -157,7 +157,6 @@ public:
         label_5->setText(QApplication::translate("FenConfig", "Nombre de palettes de T2 :", 0, QApplication::UnicodeUTF8));
         bOk->setText(QApplication::translate("FenConfig", "OK", 0, QApplication::UnicodeUTF8));
         bCancel->setText(QApplication::translate("FenConfig", "Annuler", 0, QApplication::UnicodeUTF8));
-        Q_UNUSED(FenConfig);
     } // retranslateUi
 
 };
