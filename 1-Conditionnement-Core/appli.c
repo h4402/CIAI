@@ -73,7 +73,7 @@ int appli() {
 	/* Gestion de l'arret d'urgence */
 	SemArrUrgence = semBCreate(SEM_Q_PRIORITY, SEM_EMPTY);
 	idGestArrUrg = taskSpawn("gestionArretUrgence", PRIO_GESTION_ARRET_URGENCE, 0, STACK_GESTION_ARRET_URGENCE,
-			(FUNCPTR)taskGestArrUrg, idRempCart, idRempPal, 0, 0, 0, 0, 0, 0, 0, 0);
+			(FUNCPTR)taskGestArrUrg, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	 
 	/* ######################## Phase d'attente ########################*/
 	 
