@@ -3,10 +3,6 @@
 #include "handler.h"
 #include "TacheSimu.h"
 
-#define X 5
-#define Y 5
-#define Z 5
-
 /**
  * Prend le sémaphore d'init de la production lors du lancement.
  * Boucle infinie qui appelle le capteur dimensionnel

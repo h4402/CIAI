@@ -131,28 +131,34 @@ void taskRempPal()
 	int nbPalette = 0;
 	int nbCarton = 0;
 	MsgErrSign err;
-	int attente = 0;
 	MsgFin msg;
 	int nbPalTotale = 0;
-	int j = 0;
+	int i;
+	
+	/* On récupère le nombre de palette à préparer. */
 	semTake(SemInitProd, WAIT_FOREVER);
 	nbPalTotale = nbProd.nbPalettes1 + nbProd.nbPalettes2;
 	semGive(SemInitProd);
+	
+	/* Sémaphore qui signalera la fin de l'application. */
 	semTake(SemFinProd, WAIT_FOREVER);
-	for(j = 0;j < nbPalTotale;j++)
+	
+	/* On produit toutes les palettes. */
+	for(i = 0;i < nbPalTotale;i++)
 	{
-		
-		int i = 0;
+		/* On récupère une palettte. */
 		if (semTake(SemPresPal, TIMEOUT_PAL) == ERROR)
 		{
+			/* Erreur: Pas de palette. */
 			err.errNo = ERR_ABS_PALETTE;
 			err.temps = time(NULL);
 			procEnvoiErreur(err);
 		}
 
+		/* On remplit une palette de cartons. */
 		for(;;)
 		{
-			
+			/* On prend un carton. */
 			semTake(SemLongFileAttente, WAIT_FOREVER);
 			if(LongFileAttente > 0)
 			{
@@ -160,6 +166,7 @@ void taskRempPal()
 				semGive(SemLongFileAttente);
 				if(nbCarton >= nbProd.nbCartonParPalette)
 				{
+					/* On a fini de remplir la palette. */
 					nbPalette += 1;
 					nbCarton = 0;
 					break;
@@ -171,8 +178,9 @@ void taskRempPal()
 			}
 		}
 
-		/* Palette est faite */
+		/* La palette est faite */
 		
+		/* On créé un message. */
 		msg.paletteOuCarton = PALETTE;
 		msg.temps = time(NULL);
 		
@@ -190,14 +198,21 @@ void taskRempPal()
 			nbPal.nbPal2 += 1;
 		}
 		semGive(SemNbPal);
-		
+		/* On envoi le message. */
 		procEnvoiMessage(msg);
 		
+		nbCarton = 0;
+		
 	}
+	/* Toutes les palettes sont finis, on dit qu'on a terminé l'appli. */
 	semGive(SemFinProd);
 }
 
-
+/**
+ * TODO: je crois que cette tache est pourrie.
+ * Tache qui va bloquer les taches de production dans 
+ * le cas d'un arret d'urgence.
+ */
 void taskGestArrUrg(int idRempCart, int idRempPal)
 {
 	MsgErrSign msg; 
@@ -210,7 +225,6 @@ void taskGestArrUrg(int idRempCart, int idRempPal)
 	taskSuspend(idRempCart);
 	taskSuspend(idRempPal);
 	
-	
 	procEnvoiErreur(msg);
 	
 	/* TODO : checker si on continue bien les taches */
@@ -218,17 +232,21 @@ void taskGestArrUrg(int idRempCart, int idRempPal)
 	taskResume(idRempPal);
 }
 
-
 /**
  * Procédures globales d'envoi de message
  */
 
+/**
+ * Envoi un message dans la boite.
+ */
 void procEnvoiMessage(MsgFin msgFin)
 {
-	// C'est tout
 	msgQSend(BalMessages, (char*)&msgFin, sizeof(MsgFin), NO_WAIT, MSG_PRI_NORMAL);
 }
 
+/**
+ * Envoi une erreur dans la boite.
+ */
 void procEnvoiErreur(MsgErrSign err)
 {
 	ClapetOuvert = 0;

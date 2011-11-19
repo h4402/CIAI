@@ -1,12 +1,19 @@
 #include "common.h"
 
+
 void handlerCapteurDim(Dimension dim) 
 {	
-	
-	/* Renvoi toujours un bon truc */
 	Piece p;
-	p.type = 0;
-	p.bon = TRUE;
+	/* TODO: Rajouter un Random */
+	if (X == dim.x && Y == dim.y && Z == dim.z)
+	{
+		p.bon = TRUE;
+	
+	}
+	else
+	{
+		p.bon = FALSE;
+	}
 	p.dim = dim;
 	
 	/* Voir ce qu'on donne dans la boite aux lettres */
@@ -14,8 +21,10 @@ void handlerCapteurDim(Dimension dim)
 	
 }
 
-
+/**
+ * L'arret d'urgence est terminée.
+ */
 void handlerArretUrgence()
 {
-	semGive(SemLongFileAttente);
+	semGive(SemArrUrgence);
 }

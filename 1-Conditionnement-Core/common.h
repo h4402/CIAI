@@ -9,31 +9,12 @@
 #include <taskLib.h>
 #include <sysLib.h>
 
-typedef enum {
-	ERR_UNKNOWN,
-	ERR_ABS_CARTON,
-	ERR_PIECES_RATE,
-	ERR_PRINTER,
-	ERR_ABS_PALETTE,
-	ERR_FILE_CARTONS,
-	ERR_AU,
-	ERR_NOT_ENOUGHT,
-	ERR_PASTIQ
-}errorsType;/* Sera caste en UINT8 */
-
-typedef enum {
-	MSG_UNKNOWN,
-	MSG_PROD_CFG,
-	MSG_PROD_ORD,
-	MSG_EXP_ORD,
-	MSG_ERR_SOLV,
-	MSG_ERR_SIGN,
-	MSG_PAL_PLEINE,
-	MSG_EXP_RES,
-	MSG_END_OF_PROD,/* Pas de datagramme associee */
-	MSG_CART_PLUS, /*Carton plein*/
-	MSG_CART_MOINS /*Carton sur palette*/
-}msgTypes;/* Sera caste en UINT8 */
+/**
+ * Taille des pièces.
+ */
+#define X 5
+#define Y 5
+#define Z 5
 
 #define TIMEOUT_CART 42
 #define TIMEOUT_PIE 42
@@ -89,6 +70,38 @@ typedef enum {
  * Structures de Boites aux Lettres
  * et de toutes les données manipulées.
  */
+
+/**
+ * Message d'erreurs.
+ */
+typedef enum {
+	ERR_UNKNOWN,
+	ERR_ABS_CARTON,
+	ERR_PIECES_RATE,
+	ERR_PRINTER,
+	ERR_ABS_PALETTE,
+	ERR_FILE_CARTONS,
+	ERR_AU,
+	ERR_NOT_ENOUGHT,
+	ERR_PASTIQ
+}errorsType;/* Sera caste en UINT8 */
+
+/**
+ * Message de réussites.
+ */
+typedef enum {
+	MSG_UNKNOWN,
+	MSG_PROD_CFG,
+	MSG_PROD_ORD,
+	MSG_EXP_ORD,
+	MSG_ERR_SOLV,
+	MSG_ERR_SIGN,
+	MSG_PAL_PLEINE,
+	MSG_EXP_RES,
+	MSG_END_OF_PROD,/* Pas de datagramme associee */
+	MSG_CART_PLUS, /*Carton plein*/
+	MSG_CART_MOINS /*Carton sur palette*/
+}msgTypes;/* Sera caste en UINT8 */
  
 typedef enum {
 	Piece_1,
@@ -122,7 +135,6 @@ typedef struct {
 } Dimension;
 
 typedef struct {
-	TypePiece type;
 	Dimension dim;
 	Boolean bon;
 } Piece;
@@ -156,7 +168,6 @@ typedef struct {
 	int nbPal2;
 } NbPal;
 
-
 /**
  * Zone de mémoire partagées.
  */
@@ -167,7 +178,6 @@ static Boolean ClapetOuvert;
 static Prod nbProd;
 
 static NbPal nbPal; 
-
 
 /**
  * Constantes pratiques pour paramétrer le programme.

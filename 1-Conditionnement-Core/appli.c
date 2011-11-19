@@ -78,12 +78,13 @@ int appli() {
 	/* ######################## Phase d'attente ########################*/
 	 
 		semTake(SemFinProd, WAIT_FOREVER);
-		/* Faire quelque chose pour attendre. */
 	
 	/* ######################## Phase de suppression ########################*/
 	
 	taskDelete(idGestArrUrg);
 	taskDelete(idGestErr);
+	
+	/* Normalement ces deux taches sont déjà finis... */
 	taskDelete(idRempPal);
 	taskDelete(idRempCart);
 	
