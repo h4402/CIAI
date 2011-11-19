@@ -5,13 +5,14 @@
 #include "ui_fenprincipale.h"
 
 FenPrincipale::FenPrincipale(QWidget *parent)
-    : QWidget(parent), ui(new Ui::FenPrincipale)
+    : QWidget(parent), ui(new Ui::FenPrincipale),nbT1(0),nbT2(0),cannal(new Communication("127.0.0.1",this))
 {
     ui->setupUi(this);
     this->nbT1 = 0;
     this->nbT2 = 0;
     connect(ui->bNewCom,SIGNAL(clicked()),this,SLOT(nouvelleCommande()));
     connect(ui->bRunProd,SIGNAL(clicked()),this,SLOT(configurerProduction()));
+    connect(cannal,SIGNAL(ecrireLog(QString)),this,SLOT(ecrireLog(QString)));
 }
 
 void FenPrincipale::nouvelleCommande()
@@ -48,9 +49,15 @@ void FenPrincipale::lancerProduction(int codeOp, int nbPieceParCarton, int nbCar
     // + partie communication avec l'application
 }
 
+void FenPrincipale::ecrireLog(QString toLog)
+{
+    ui->tLog->insertHtml(toLog+"<br />");
+}
+
 
 FenPrincipale::~FenPrincipale()
 {
+
     delete ui;
 }
 

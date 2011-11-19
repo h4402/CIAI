@@ -8,10 +8,11 @@ class Communication : public QObject
 {
 Q_OBJECT
 public:
-    Communication(const QHostAddress & address, quint16 port=9002,QObject * parent = 0);
+    Communication(const QString & address,QObject * parent = 0, quint16 port=9002);
+    ~Communication();
 
 public slots :
-    void envoyerMsg(quint8 type, const char * data);
+    void envoyerMsg(msgTypes type, const QByteArray & data);
     void envoyerConfig(quint16 pieceParCarton,
                        quint16 cartonParPalette,
                        quint16 maxMauvais);
@@ -37,7 +38,12 @@ protected slots:
     void nouvellesDonnees();
 
 protected :
-    QTcpSocket socket;
+    //methodes
+    int datagramSize(msgTypes type);
+    void traiterDatagram(msgTypes type, QByteArray * data);
+
+    //attributs
+    QTcpSocket * mSocket;
 };
 
 #endif // COMMUNICATION_H

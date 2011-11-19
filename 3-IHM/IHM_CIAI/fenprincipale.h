@@ -2,6 +2,7 @@
 #define FENPRINCIPALE_H
 
 #include <QtGui/QWidget>
+#include "communication.h"
 
 namespace Ui
 {
@@ -21,11 +22,13 @@ public:
 protected slots:
     void nouvelleCommande();
     void configurerProduction();
+    void ecrireLog(QString toLog);
 
 private:
     Ui::FenPrincipale *ui;
     int nbT1;
     int nbT2;
+    Communication * cannal;
 };
 
 #endif // FENPRINCIPALE_H
