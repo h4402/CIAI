@@ -209,11 +209,11 @@ void taskRempPal()
 }
 
 /**
- * TODO: je crois que cette tache est pourrie.
  * Tache qui va bloquer les taches de production dans 
- * le cas d'un arret d'urgence.
+ * le cas d'un arret d'urgence. L'erreur d'AU est traitée comme une 
+ * erreur normale.
  */
-void taskGestArrUrg(int idRempCart, int idRempPal)
+void taskGestArrUrg()
 {
 	MsgErrSign msg; 
 	msg.errNo = ERR_AU;
@@ -221,15 +221,8 @@ void taskGestArrUrg(int idRempCart, int idRempPal)
 	/* On prend le jeton du semaphore AU */
 	semTake(SemArrUrgence,WAIT_FOREVER);
 	
-	/* On stoppe les taches de remplissage */
-	taskSuspend(idRempCart);
-	taskSuspend(idRempPal);
-	
 	procEnvoiErreur(msg);
 	
-	/* TODO : checker si on continue bien les taches */
-	taskResume(idRempCart);
-	taskResume(idRempPal);
 }
 
 /**

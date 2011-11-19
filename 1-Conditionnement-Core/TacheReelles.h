@@ -18,7 +18,7 @@ void taskRempPal();
 /**
  * Tache qui arrete la production lors d'un arret d'urgence.
  */
-void taskGestArrUrg(int idRempCart, int idRempPal);
+void taskGestArrUrg();
 
 /**
  * Tache qui gère les petites erreurs et le message de résolution de l'IHM.
