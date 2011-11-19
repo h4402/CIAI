@@ -4,63 +4,74 @@
  * Tâches réelles de l'application
  */
 
-
+/**
+ * Récupère des cartons et des pièces 
+ * respectivement dans un sémaphore et dans une BAL.
+ * Incrémente ensuite le compte de la file d'attente.
+ */
 void taskRempCart() 
 {
-	
-	int nbCarton = 0;
 	int file = 0;
 	Piece p;
 	MsgErrSign err;
 	MsgFin msg;
-	for (;;) 
+	int i;
+	
+	semTake(SemInitProd);
+	nbCartonMax = nbProd.nbCartonParPalette*nbProd.nbPalettes1 + nbProd.nbCartonParPalette*nbProd.nbPalettes2;
+	semGive(SemInitProd);
+	
+	/* Boucle qui va remplir le bon nombre de cartons. */
+	for (i = 0; i < nbCartonMax; i++) 
 	{
 		Carton c;
-		int i = 0;
-		if (msgQReceive(BalPresCart,(char *)&c,sizeof(Carton), TIMEOUT_CART) == ERROR)
+		memset(&c, 0, sizeof(Carton));
+		
+		/* Récupère un carton. */
+		if (semTake(SemPresCart, TIMEOUT_CART) == ERROR)
 		{
+			/* Erreur: Pas de Carton */
 			err.errNo = ERR_ABS_CARTON;
 			err.temps = time(NULL);
 			procEnvoiErreur(err);
 		}
-		 
+		
+		/* Récupère la taille de la file d'attente. */
 		semTake(SemLongFileAttente, WAIT_FOREVER);
 		file = LongFileAttente;
 		semGive(SemLongFileAttente);
 		if(file >= MAX_CARTON_ATTENTE) 
 		{
+			/* Pas de place dans la file d'attente: Erreur */
 			err.errNo = ERR_FILE_CARTONS;
 			err.temps = time(NULL);
 			procEnvoiErreur(err);
 		}
 		
+		/* Boucle qui va remplir un carton. */
 		for(;;)
 		{
-			
+			/* On récupère une pièce. */
 			if (msgQReceive(BalPresPie,(char *)&p,sizeof(Piece), TIMEOUT_PIE) == ERROR)
 			{
+				/* Erreur pas de pièces. */
 				err.errNo = ERR_NOT_ENOUGHT;
 				err.temps = time(NULL);
 				procEnvoiErreur(err);
 			}
 			else
 			{
-				if(i == 0) 
-				{
-					if(p.type == Piece_1)
-						c.numLot = nbProd.numLot1;
-					else
-						c.numLot = nbProd.numLot2;
-					c.nbPiece = 0;
-					c.nbPieceDefect = 0;
-					c.temps = time(NULL); 
-					i += 1;
-				}
+				/* On vérifie si la pièce est bonne ici 
+				 * (selon les informations du capteur dimensionnel)
+				 * on triche un peu mais c'est pour facilité le comptage
+				 * des pièces defectueuses par carton...
+				 */
 				if(p.bon)
 				{
 					c.nbPiece += 1;
 					if(c.nbPiece >= nbProd.nbPieceParCarton)
 					{
+						/* On a fini de remplir le carton. */
 						break;
 					}
 				}
@@ -69,6 +80,7 @@ void taskRempCart()
 					c.nbPieceDefect += 1;
 					if (c.nbPieceDefect >= nbProd.seuilDefectParCarton)
 					{
+						/* Trop de pièces defectueuses. */
 						err.errNo = ERR_PIECES_RATE;
 						err.temps = time(NULL);
 						procEnvoiErreur(err);
@@ -77,31 +89,43 @@ void taskRempCart()
 			}
 		}
 		
+		/* Le carton est fait */
+		nbCarton += 1;
+		
+		/* On fini l'étiquette. */
+		c.temps = time(NULL);
 		if(nbCarton <= nbProd.nbCartonParPalette*nbProd.nbPalettes1)
 		{
 			c.type = Piece_1;
+			c.numLot = nbProd.numLot1;
 		}
 		else 
 		{
 			c.type = Piece_2;
+			c.numLot = nbProd.numLot2;
 		}
 		
-		/* Le carton est fait */
+		/* On imprime. */
+		msgQSend(BalImp,(char *)&c,sizeof(Carton), WAIT_FOREVER, MSG_PRI_NORMAL);
 		
+		/* On envoi le message à la com. */
 		msg.paletteOuCarton = CARTON;
 		msg.temps = time(NULL);
-		
 		procEnvoiMessage(msg);
 		
-		nbCarton += 1;
-		
+		/* On ajoute le carton à la file. */
 		semTake(SemLongFileAttente, WAIT_FOREVER);
 		LongFileAttente += 1;
 		semGive(SemLongFileAttente);
+	
 	}
 
 }
 
+/**
+ * Décrémente la file d'attente,
+ * Créer des palettes avec des cartons.
+ */
 void taskRempPal()
 {
 	int nbPalette = 0;

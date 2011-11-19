@@ -210,4 +210,6 @@ SEM_ID SemNbPal;
 
 SEM_ID SemFinProd;
 
+SEM_ID SemPresCart;
+
 #endif

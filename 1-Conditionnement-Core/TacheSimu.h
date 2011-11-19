@@ -3,17 +3,30 @@
 
 #include "common.h"
 
+/**
+ * Tache qui envoi des pieces au capteur dimensionnel
+ * toutes les tempsEntrePieceSecondes.
+ */
 void taskPresPiece(int probaSurMille, int tempsEntrePiece);
 
+/**
+ * Envoi des cartons dans remplirCarton.
+ */
 void taskPresCarton(int tempsEntreCarton);
 
+/**
+ * Envoi des palettes dans remplirPalette.
+ */
 void taskPresPalette(int tempsEntrePalette);
 
+/**
+ * Récupère les étiquettes à imprimer.
+ */
 void taskImprimante();
 
-// TODO : (dans la simulation) est-ce que l'arret d'urgence survient de temps en temps, ou bien
-// doit-on l'actionner nous-meme (plus probable)
+/**
+ * Est activée lors d'un arrêt d'urgence.
+ */
 void taskSimuArretUrgence();
-
 
 #endif

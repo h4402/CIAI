@@ -33,7 +33,7 @@ int appli() {
 	/* =========================== Simulation ======================== */
 	
 	/* Simulation de Présence Carton */
-	BalPresCart = msgQCreate(MAX_PRESENCE_CARTON, sizeof(Carton), MSG_Q_FIFO);
+	SemPresCart = semCCreate(SEM_Q_FIFO, 0);
 	idPresCart = taskSpawn("presenceCarton", PRIO_PRESENCE_CARTON, 0, STACK_PRESENCE_CARTON,
 			(FUNCPTR)taskPresCarton,TEMPS_ENTRE_CARTON, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	
