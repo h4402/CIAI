@@ -4,7 +4,8 @@
 void handlerCapteurDim(Dimension dim) 
 {	
 	Piece p;
-	/* TODO: Rajouter un Random */
+	/* TODO: Rajouter un Random */ /* the random is not made here, is made when you asign sizes to pieces*/
+	/* see tachsimu, piecepret*/
 	if (X == dim.x && Y == dim.y && Z == dim.z)
 	{
 		p.bon = TRUE;
