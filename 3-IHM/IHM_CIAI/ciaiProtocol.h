@@ -11,9 +11,9 @@
 #endif
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
 typedef enum {
 ERR_UNKNOWN,
 ERR_ABS_CARTON,
@@ -23,7 +23,7 @@ ERR_ABS_PALETTE,
 ERR_FILE_CARTONS,
 ERR_AU,
 ERR_NOT_ENOUGHT,
-ERR_PASTIQ
+ERR_PLASTIQ
 }errorsType;/* Sera caste en UINT8 */
 
 typedef enum {
@@ -42,52 +42,49 @@ MSG_CART_MOINS /*Carton sur palette*/
 
 typedef struct
 {
-   UINT16 pieceParCarton;
-   UINT16 cartonParPalette;
-   UINT16 maxMauvais;
+    UINT16 pieceParCarton;
+    UINT16 cartonParPalette;
+    UINT16 maxMauvais;
 } MsgProdCfg;
 
 typedef struct
 {
-       UINT16 NumLot1;
-       UINT16 NbLot1;
-       UINT16 NumLot2;
-       UINT16 NbLot2;
-   char opCode[5];
+	UINT16 NumLot1;
+	UINT16 NbLot1;
+	UINT16 NumLot2;
+	UINT16 NbLot2;
+    char opCode[5];
 } MsgProdOrd;
 
 typedef struct
 {
-       UINT16 numCom;
-   UINT16 nbT1;
-   UINT16 nbT2;
-   UINT8 noQuai;
-   char dest[10];
+	UINT16 numCom;
+    UINT16 nbT1;
+    UINT16 nbT2;
+    UINT8 noQuai;
+    char dest[10];
 } MsgExpOrd;
 
 typedef struct
 {
-   UINT8 errNo;
-       UINT8 reprise;
+    UINT8 errNo;
+	UINT8 reprise;
 } MsgErrSolv;
 
 typedef struct
 {
-   UINT8 errNo;
+    UINT8 errNo;
 } MsgErrSign;
-
 
 typedef struct
 {
-   UINT8 numCom;
-   UINT8 reussite;
+    UINT8 numCom;
+    UINT8 reussite;
 } MsgExpRes;
 
 
-
 #ifdef __cplusplus
-}
-#endif
+ }
+ #endif
 
 #endif /* CIAIPROTOCOL_H */
- 

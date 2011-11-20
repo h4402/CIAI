@@ -1,0 +1,13 @@
+INPUT(
+./debug/main.o
+./debug/fenprincipale.o
+./debug/fencommande.o
+./debug/fenconfig.o
+./debug/communication.o
+./debug/widgetcommande.o
+./debug/moc_fenprincipale.o
+./debug/moc_fencommande.o
+./debug/moc_fenconfig.o
+./debug/moc_widgetcommande.o
+./debug/qrc_ressources.o
+);

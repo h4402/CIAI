@@ -1,0 +1,13 @@
+INPUT(
+./release/main.o
+./release/fenprincipale.o
+./release/fencommande.o
+./release/fenconfig.o
+./release/communication.o
+./release/widgetcommande.o
+./release/moc_fenprincipale.o
+./release/moc_fencommande.o
+./release/moc_fenconfig.o
+./release/moc_widgetcommande.o
+./release/qrc_ressources.o
+);
