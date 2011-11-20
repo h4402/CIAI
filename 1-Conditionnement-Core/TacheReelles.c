@@ -9,6 +9,12 @@
  * respectivement dans un sémaphore et dans une BAL.
  * Incrémente ensuite le compte de la file d'attente.
  */
+/**
+ * Pour le cas d'erreur, si on reprend comme prévu, tout est bon,
+ * si on doit jeter le carton, alors on doit mettre un booléen a vrai,
+ * sortir de la boucle qui remplir le carton, ne pas effectuer les
+ * truc pour la fin de carton, décrémenter i, puis reprendre en début de boucle.
+ */
 void taskRempCart() 
 {
 	int file = 0;
@@ -90,7 +96,6 @@ void taskRempCart()
 		}
 		
 		/* Le carton est fait */
-		nbCarton += 1;
 		
 		/* On fini l'étiquette. */
 		c.temps = time(NULL);
@@ -217,12 +222,13 @@ void taskGestArrUrg()
 {
 	MsgErrSign msg; 
 	msg.errNo = ERR_AU;
-	msg.temps = time(NULL);
-	/* On prend le jeton du semaphore AU */
-	semTake(SemArrUrgence,WAIT_FOREVER);
-	
-	procEnvoiErreur(msg);
-	
+	for (;;)
+	{
+		/* On prend le jeton du semaphore AU */
+		semTake(SemArrUrgence,WAIT_FOREVER);
+		msg.temps = time(NULL);
+		procEnvoiErreur(msg);
+	}
 }
 
 /**
@@ -242,9 +248,12 @@ void procEnvoiMessage(MsgFin msgFin)
  */
 void procEnvoiErreur(MsgErrSign err)
 {
-	ClapetOuvert = 0;
+	ClapetOuvert = FALSE;
 	msgQSend(BalMessages, (char*)&err, sizeof(MsgErrSign),NO_WAIT,MSG_PRI_NORMAL);
 	semTake(SemErrTraitee,WAIT_FOREVER);
+	
+	/* TODO: réouvrir le clapet? 
+	 * Dire si on fait un reprise ou pas?*/
 }
 
 
