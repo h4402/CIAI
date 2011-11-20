@@ -14,22 +14,40 @@ QObject(parent),mSocket(new QTcpSocket(this))
     }
     else
     {
+        //TODO : Message d'erreur pour l'utilisateur (quitter réessayer...)
         qDebug("Erreur lors de la connection au serveur (timeout).");
     }
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(nouvellesDonnees()));
 }
+
+
+
+Communication::~Communication()
+{
+    mSocket->close();
+    qDebug("IHM déconnecté du serveur.");
+    mSocket->deleteLater();
+}
+
 //----------------------------------------------------------Envoi
 //Fonction générique d'envoi de donnée.
 void Communication::envoyerMsg(msgTypes type, const QByteArray & data)
 {
-
+    quint8 typeToSend(type);
+    mSocket->write((const char *)&typeToSend,sizeof(quint8));
+    mSocket->write(data);
 }
 
 void Communication::envoyerConfig(quint16 pieceParCarton,
                    quint16 cartonParPalette,
                    quint16 maxMauvais)
 {
-
+    MsgProdCfg msg;
+    msg.pieceParCarton=pieceParCarton;
+    msg.cartonParPalette=cartonParPalette;
+    msg.maxMauvais=maxMauvais;
+    QByteArray data((const char *)&msg,sizeof(MsgProdCfg));
+    envoyerMsg(MSG_PROD_CFG,data);
 }
 
 void Communication::envoyerProduction(quint16 numLot1,
@@ -38,7 +56,14 @@ void Communication::envoyerProduction(quint16 numLot1,
                        quint16 nbPaletteT2,
                        const char * opCode)
 {
-
+    MsgProdOrd msg;
+    msg.NumLot1=numLot1;
+    msg.NbLot1=nbPaletteT1;
+    msg.NumLot2=numLot2;
+    msg.NbLot2=nbPaletteT2;
+    strcpy(msg.opCode,opCode);
+    QByteArray data((const char *)&msg,sizeof(MsgProdOrd));
+    envoyerMsg(MSG_PROD_ORD,data);
 }
 
 void Communication::envoyerExpedition(quint16 numCommande,
@@ -47,13 +72,24 @@ void Communication::envoyerExpedition(quint16 numCommande,
                        quint8 quai,
                        const char * destinataire)
 {
-
+    MsgExpOrd msg;
+    msg.numCom=numCommande;
+    msg.nbT1=nbT1;
+    msg.nbT2=nbT2;
+    msg.noQuai=quai;
+    strcpy(msg.dest,destinataire);
+    QByteArray data( (const char *)&msg,sizeof(MsgExpOrd));
+    envoyerMsg(MSG_EXP_ORD,data);
 }
 
 void Communication::traiterErreur(errorsType numErr,
                    bool reprise)
 {
-
+    MsgErrSolv msg;
+    msg.errNo=(UINT8)numErr;
+    msg.reprise=(UINT8)reprise;
+    QByteArray data( (const char *)&msg,sizeof(MsgErrSolv));
+    envoyerMsg(MSG_ERR_SOLV,data);
 }
 
 //--------------------------------------------------------Reception
@@ -195,12 +231,4 @@ void Communication::traiterDatagram(msgTypes type, QByteArray * data)
         emit ecrireLog(tr("<strong>Données reçus ne pouvant être traités : </strong>")+(int) type
                        +tr(" \n, contenu :\n")+(*data));
     }
-}
-
-
-Communication::~Communication()
-{
-    mSocket->close();
-    qDebug("IHM déconnecté du serveur.");
-    mSocket->deleteLater();
 }
