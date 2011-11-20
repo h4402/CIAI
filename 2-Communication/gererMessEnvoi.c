@@ -13,6 +13,7 @@ int gererMessEnvoi(MSG_Q_ID balEnvoi, MSG_Q_ID balJournal, MSG_Q_ID balMessages)
 	MsgExpRes messExp;
 	MsgPalPleine messPal;
 	int finProd;
+	int log;
 	time_t date;
 	
 	int nb;
@@ -114,6 +115,7 @@ int gererMessEnvoi(MSG_Q_ID balEnvoi, MSG_Q_ID balJournal, MSG_Q_ID balMessages)
 			/* Envoi du message dans la boite au lettre de "Journal" */
 			FAIL(msgQSend(balJournal, env, sizeof(time_t)+1, WAIT_FOREVER, MSG_PRI_NORMAL))
 			
+			close(log);
 			/* Suppression des taches Reception et Envoi */
 			taskDelete(envoiId);
 			taskDelete(receptionId);

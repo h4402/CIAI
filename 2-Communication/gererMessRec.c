@@ -53,6 +53,9 @@ int gererMessRec(MSG_Q_ID balReception, MSG_Q_ID balCommande, MSG_Q_ID balResErr
 				/* Envoi du message dans la boite au lettre de "Resolution d'erreur" */
 				FAIL(msgQSend(balResErreur, (char*)&messErr, sizeof(messErr), WAIT_FOREVER, MSG_PRI_NORMAL))
 				break;
+			default:
+				puts("Unknown Message detected");
+				break;
 		}	
 	}
 }
