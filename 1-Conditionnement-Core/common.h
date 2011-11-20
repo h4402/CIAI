@@ -8,9 +8,10 @@
 #include <string.h>
 #include <taskLib.h>
 #include <sysLib.h>
+#include <stdlib.h>
 
 /**
- * Taille des pièces.
+ * Taille des piï¿½ces.
  */
 #define X 5
 #define Y 5
@@ -34,7 +35,7 @@
 #define TEMPS_ENTRE_PALETTE 10
 #define TEMPS_ENTRE_PIECE 10
 
-/* Priorité de chaque tache */
+/* Prioritï¿½ de chaque tache */
 #define PRIO_REMPLIR_CARTON DEFAULT_PRIO
 #define PRIO_PRESENCE_CARTON DEFAULT_PRIO
 #define PRIO_PRESENCE_PALETTE DEFAULT_PRIO
@@ -62,13 +63,13 @@
 
 
 /**
- * Définitions de types.
+ * Dï¿½finitions de types.
  */
 #define Boolean int
 
 /**
  * Structures de Boites aux Lettres
- * et de toutes les données manipulées.
+ * et de toutes les donnï¿½es manipulï¿½es.
  */
 
 /**
@@ -87,7 +88,7 @@ typedef enum {
 }errorsType;/* Sera caste en UINT8 */
 
 /**
- * Message de réussites.
+ * Message de rï¿½ussites.
  */
 typedef enum {
 	MSG_UNKNOWN,
@@ -169,7 +170,7 @@ typedef struct {
 } NbPal;
 
 /**
- * Zone de mémoire partagées.
+ * Zone de mï¿½moire partagï¿½es.
  */
 static int LongFileAttente;
 
@@ -180,14 +181,14 @@ static Prod nbProd;
 static NbPal nbPal; 
 
 /**
- * Constantes pratiques pour paramétrer le programme.
+ * Constantes pratiques pour paramï¿½trer le programme.
  */
 
 /**
- * Sémaphores partagés.
- * Ces sémaphores sont globaux car ils sont utilisés
- * par des procédures qui peuvent être appelées par
- * toutes les taches, nous ne les passons donc pas en paramètres.
+ * Sï¿½maphores partagï¿½s.
+ * Ces sï¿½maphores sont globaux car ils sont utilisï¿½s
+ * par des procï¿½dures qui peuvent ï¿½tre appelï¿½es par
+ * toutes les taches, nous ne les passons donc pas en paramï¿½tres.
  */
 
 MSG_Q_ID BalPresPie;
@@ -201,10 +202,10 @@ MSG_Q_ID BalPresPal;
 MSG_Q_ID BalImp;
 
 /**
- * Sémaphores partagés.
- * Ces sémaphores sont globaux car ils sont utilisés
- * par des procédures qui peuvent être appelées par
- * toutes les taches, nous ne les passons donc pas en paramètres.
+ * Sï¿½maphores partagï¿½s.
+ * Ces sï¿½maphores sont globaux car ils sont utilisï¿½s
+ * par des procï¿½dures qui peuvent ï¿½tre appelï¿½es par
+ * toutes les taches, nous ne les passons donc pas en paramï¿½tres.
  */
 SEM_ID SemErrTraitee;
 
