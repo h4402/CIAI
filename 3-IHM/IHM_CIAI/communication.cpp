@@ -14,10 +14,11 @@ QObject(parent),mSocket(new QTcpSocket(this))
     }
     else
     {
-        //TODO : Message d'erreur pour l'utilisateur (quitter réessayer...)
+        emit ecrireLog(tr("L'application n'a pas pu se connecter au serveur."));
         qDebug("Erreur lors de la connection au serveur (timeout).");
     }
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(nouvellesDonnees()));
+    connect(mSocket,SIGNAL(disconnected()),this,SLOT(deconnexion()));
 }
 
 
@@ -57,10 +58,10 @@ void Communication::envoyerProduction(quint16 numLot1,
                        const char * opCode)
 {
     MsgProdOrd msg;
-    msg.NumLot1=numLot1;
-    msg.NbLot1=nbPaletteT1;
-    msg.NumLot2=numLot2;
-    msg.NbLot2=nbPaletteT2;
+    msg.numLot1=numLot1;
+    msg.nbLot1=nbPaletteT1;
+    msg.numLot2=numLot2;
+    msg.nbLot2=nbPaletteT2;
     strcpy(msg.opCode,opCode);
     QByteArray data((const char *)&msg,sizeof(MsgProdOrd));
     envoyerMsg(MSG_PROD_ORD,data);
@@ -74,8 +75,8 @@ void Communication::envoyerExpedition(quint16 numCommande,
 {
     MsgExpOrd msg;
     msg.numCom=numCommande;
-    msg.nbT1=nbT1;
-    msg.nbT2=nbT2;
+    msg.nbT1toBuild=nbT1;
+    msg.nbT2toBuild=nbT2;
     msg.noQuai=quai;
     strcpy(msg.dest,destinataire);
     QByteArray data( (const char *)&msg,sizeof(MsgExpOrd));
@@ -95,44 +96,53 @@ void Communication::traiterErreur(errorsType numErr,
 //--------------------------------------------------------Reception
 void Communication::nouvellesDonnees()
 {
-    QDataStream in(mSocket);
     static quint8 MsgType = 254;
     static int MsgLength = 0;
 
-    //On ne connait pas encore la taille du message
-    //On en recupere le type pour cela
-    if (MsgType == 254)
+    do
     {
-        if (mSocket->bytesAvailable() < (int)sizeof(quint8))
-             return;
 
-        in >> MsgType;
-        MsgLength = datagramSize((msgTypes)MsgType);
-    }
+        //On ne connait pas encore la taille du message
+        //On en recupere le type pour cela
+        if (MsgType == 254)
+        {
+            if (mSocket->bytesAvailable() < (int)sizeof(quint8))
+                 return;
+            mSocket->read((char *) &MsgType,(int)sizeof(quint8));
+            MsgLength = datagramSize((msgTypes)MsgType);
+        }
 
-    //Pas de contenu au message
-    if(MsgLength==0)
-    {
-        traiterDatagram((msgTypes)MsgType,NULL);
-    }
-    else
-    {
-        //On attent que le contenu arrive
-        if (mSocket->bytesAvailable() < MsgLength)
-            return;
+        //Pas de contenu au message
+        if(MsgLength==0)
+        {
+            traiterDatagram((msgTypes)MsgType,NULL);
+        }
+        else
+        {
+            //On attend que le contenu arrive
+            if (mSocket->bytesAvailable() < MsgLength)
+                return;
 
-        // Si on arrive jusqu'à cette ligne, on peut récupérer le message entier
-        QByteArray messageRecu;
-        in >> messageRecu;
+            // Si on arrive jusqu'à cette ligne, on peut récupérer le message entier
+            QByteArray messageRecu;
+            if(MsgLength==-1)
+            {
+                messageRecu = mSocket->readLine();
+            }
+            else
+            {
+                messageRecu = mSocket->read(MsgLength);
+            }
 
-        // On traite le message
-        traiterDatagram((msgTypes)MsgType,&messageRecu);
-    }
+            // On traite le message
+            traiterDatagram((msgTypes)MsgType,&messageRecu);
+        }
 
 
-    // On remet la taille et le type du message à 0 pour pouvoir recevoir de futurs messages
-    MsgType = 254;
-    MsgLength = 0;
+        // On remet la taille et le type du message à 0 pour pouvoir recevoir de futurs messages
+        MsgType = 254;
+        MsgLength = 0;
+    } while(mSocket->bytesAvailable()>0);//S'il reste des données à lire, on recommence.
 
 }
 
@@ -160,7 +170,7 @@ int Communication::datagramSize(msgTypes type)
         return sizeof(MsgErrSign);
         break;
     case MSG_PAL_PLEINE :
-        return 0;
+        return sizeof(MsgPalPleine);
         break;
     case MSG_EXP_RES :
         return sizeof(MsgExpRes);
@@ -185,6 +195,8 @@ void Communication::traiterDatagram(msgTypes type, QByteArray * data)
     case MSG_UNKNOWN :
         qDebug("Message de type inconnu reçu");
         break;
+    //__________________________Messages NE pouvant PAS êtres reçus___________________________
+
     case MSG_PROD_CFG :
         emit ecrireLog(tr("<strong>Erreur :</strong> Message de configuration de la production reçu. O_o"));
         qDebug("Erreur : Msg Prog Cfg recu");
@@ -201,15 +213,18 @@ void Communication::traiterDatagram(msgTypes type, QByteArray * data)
         emit ecrireLog(tr("<strong>Erreur :</strong> Message de résolution d'erreur reçu. O_o"));
         qDebug("Erreur : Message de resolution d'erreur reçu.");
         break;
+    //____________________________Messages POUVANT êtres reçus________________________________
+
     case MSG_ERR_SIGN :
         emit receptionErreur((errorsType)((MsgErrSign*)(data->constData()))->errNo);
         break;
     case MSG_PAL_PLEINE :
-        //TODO : faire un traitement plus complet.
-        emit ecrireLog(tr("Une palette est maintenant complette"));
+        emit paletteComplete((quint16)((MsgPalPleine*)(data->constData()))->numLot);
         break;
     case MSG_EXP_RES :
     {
+        //nouveau contexte a cause de la création d'une variable dans le switch
+        //(problème de portée)
         const MsgExpRes * msg = ((const MsgExpRes*)(data->constData()));
         emit receptionEtatCommande(msg->numCom,(bool) msg->reussite);
     }
@@ -219,16 +234,21 @@ void Communication::traiterDatagram(msgTypes type, QByteArray * data)
         emit ecrireLog(tr("Production terminée."));
         break;
     case MSG_CART_PLUS :/*Carton plein*/
-        //TODO : faire un traitement plus complet.
-        emit ecrireLog(tr("Un carton en plus"));
+        emit updateFileAttenteCartons(1);
         break;
     case MSG_CART_MOINS :/*Carton sur palette*/
-        //TODO : faire un traitement plus complet.
-        emit ecrireLog(tr("Un carton en moins."));
+        emit updateFileAttenteCartons(-1);
         break;
     default :
         qDebug("Message de type invalide reçu.");
-        emit ecrireLog(tr("<strong>Données reçus ne pouvant être traités : </strong>")+(int) type
-                       +tr(" \n, contenu :\n")+(*data));
+        emit ecrireLog(tr("<strong>Données reçus ne pouvant être traités : </strong>")
+                       +(int) type
+                       +tr(" <br /> contenu : <br />")+(*data));
     }
+}
+
+void Communication::deconnexion()
+{
+    qDebug("Le serveur s'est déconnecté.");
+    emit ecrireLog(tr("<strong> Erreur : </strong> l'application n'est plus connecté."));
 }

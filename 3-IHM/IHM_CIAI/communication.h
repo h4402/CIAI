@@ -8,7 +8,7 @@ class Communication : public QObject
 {
 Q_OBJECT
 public:
-    Communication(const QString & address,QObject * parent = 0, quint16 port=9002);
+    Communication(const QString & address=PROTO_ADDR,QObject * parent = 0, quint16 port=PROTO_PORT);
     ~Communication();
 
 public slots :
@@ -22,8 +22,8 @@ public slots :
                            quint16 nbPaletteT2,
                            const char * opCode);
     void envoyerExpedition(quint16 numCommande,
-                           quint16 nbT1,
-                           quint16 nbT2,
+                           quint16 nbT1toBuild,
+                           quint16 nbT2toBuild,
                            quint8 quai,
                            const char * destinataire);
     void traiterErreur(errorsType numErr,
@@ -32,10 +32,13 @@ signals:
     void receptionErreur(errorsType numErr);
     void receptionEtatCommande(quint16 numCommande,
                                bool expediee);
+    void updateFileAttenteCartons(int nb);
+    void paletteComplete(int nLot);
     void ecrireLog(QString message);
 
 protected slots:
     void nouvellesDonnees();
+    void deconnexion();
 
 protected :
     //methodes

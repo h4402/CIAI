@@ -3,16 +3,40 @@
 #include "fenconfig.h"
 #include "widgetcommande.h"
 #include "ui_fenprincipale.h"
+#include "communication.h"
 
 FenPrincipale::FenPrincipale(QWidget *parent)
-    : QWidget(parent), ui(new Ui::FenPrincipale),nbT1(0),nbT2(0),cannal(new Communication("127.0.0.1",this))
+    : QWidget(parent), ui(new Ui::FenPrincipale),nbT1toBuild(0),nbT2toBuild(0),cannal(new Communication(PROTO_ADDR,this,PROTO_PORT))
 {
     ui->setupUi(this);
-    this->nbT1 = 0;
-    this->nbT2 = 0;
     connect(ui->bNewCom,SIGNAL(clicked()),this,SLOT(nouvelleCommande()));
     connect(ui->bRunProd,SIGNAL(clicked()),this,SLOT(configurerProduction()));
+
+    //Reception
     connect(cannal,SIGNAL(ecrireLog(QString)),this,SLOT(ecrireLog(QString)));
+    connect(cannal,SIGNAL(paletteComplete(int)),this,SLOT(paletteComplete(int)));
+    connect(cannal,SIGNAL(updateFileAttenteCartons(int)),this,
+            SLOT(updateFileAttenteCartons(int)));
+    connect(cannal,SIGNAL(receptionEtatCommande(quint16,bool)),this,
+            SLOT(updateEtatCommande(quint16,bool)));
+    connect(cannal,SIGNAL(receptionErreur(errorsType)),this,
+            SLOT(gererErreur(errorsType)));
+
+    //Emission
+    connect(this,SIGNAL(envoyerConfig(quint16,quint16,quint16)),cannal,
+            SLOT(envoyerConfig(quint16,quint16,quint16)));
+    connect(this,SIGNAL(envoyerProduction(quint16,quint16,quint16,quint16,const char*)),
+            cannal,SLOT(envoyerProduction(quint16,quint16,quint16,quint16,const char*)));
+    connect(this,SIGNAL(envoyerExpedition(quint16,quint16,quint16,quint8,const char*)),
+            cannal,SLOT(envoyerExpedition(quint16,quint16,quint16,quint8,const char*)));
+    connect(this,SIGNAL(traiterErreur(errorsType,bool)),cannal,
+            SLOT(traiterErreur(errorsType,bool)));
+}
+
+FenPrincipale::~FenPrincipale()
+{
+    cannal->deleteLater();
+    delete ui;
 }
 
 void FenPrincipale::nouvelleCommande()
@@ -25,8 +49,8 @@ void FenPrincipale::ajouterCommande(int nNbT1, int nNbT2, int nbQuai, QString de
 {
     static int lastComm = 0;
     lastComm++;
-    nbT1 += nNbT1;
-    nbT2 += nNbT2;
+    nbT1toBuild += nNbT1;
+    nbT2toBuild += nNbT2;
     destinataire.truncate(10);
     WidgetCommande *newCommande = new WidgetCommande(lastComm,
                                      nNbT1, nNbT2, nbQuai,
@@ -37,7 +61,7 @@ void FenPrincipale::ajouterCommande(int nNbT1, int nNbT2, int nbQuai, QString de
 
 void FenPrincipale::configurerProduction()
 {
-    FenConfig *wConfig = new FenConfig(this, this->nbT1, this->nbT2);
+    FenConfig *wConfig = new FenConfig(this, this->nbT1toBuild, this->nbT2toBuild);
     wConfig->show();
 }
 
@@ -55,9 +79,23 @@ void FenPrincipale::ecrireLog(QString toLog)
 }
 
 
-FenPrincipale::~FenPrincipale()
+void FenPrincipale::gererErreur(errorsType numErr)
 {
 
-    delete ui;
+}
+
+void FenPrincipale::updateEtatCommande(quint16 numCommande, bool expediee)
+{
+
+}
+
+void FenPrincipale::updateFileAttenteCartons(int nb)
+{
+
+}
+
+void FenPrincipale::paletteComplete(int numLot)
+{
+
 }
 

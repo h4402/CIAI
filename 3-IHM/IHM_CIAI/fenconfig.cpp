@@ -1,7 +1,7 @@
 #include "fenconfig.h"
 #include "ui_fenconfig.h"
 
-FenConfig::FenConfig(FenPrincipale *principale, int nbT1, int nbT2, QWidget *parent) :
+FenConfig::FenConfig(int nbT1, int nbT2, QWidget *parent) :
     QWidget(parent),
     m_ui(new Ui::FenConfig),
     wPrincipale(principale)
@@ -15,8 +15,8 @@ FenConfig::FenConfig(FenPrincipale *principale, int nbT1, int nbT2, QWidget *par
 
 void FenConfig::validerConfig()
 {
-    wPrincipale->lancerProduction(0,0,0);
-    wPrincipale->show();
+    //TODO : mettre à jour.
+    emit envoyerConfig(m_ui->nbPPCarton->value(),m_ui->nbCPalette->value(),5);
     this->close();
 }
 

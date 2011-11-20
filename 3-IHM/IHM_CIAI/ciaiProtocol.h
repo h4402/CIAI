@@ -11,9 +11,9 @@
 #endif
 
 
- #ifdef __cplusplus
- extern "C" {
- #endif
+#ifdef __cplusplus
+extern "C" {
+#endif
 typedef enum {
 ERR_UNKNOWN,
 ERR_ABS_CARTON,
@@ -42,49 +42,58 @@ MSG_CART_MOINS /*Carton sur palette*/
 
 typedef struct
 {
-    UINT16 pieceParCarton;
-    UINT16 cartonParPalette;
-    UINT16 maxMauvais;
+   UINT16 pieceParCarton;
+   UINT16 cartonParPalette;
+   UINT16 maxMauvais;
 } MsgProdCfg;
 
 typedef struct
 {
-	UINT16 NumLot1;
-	UINT16 NbLot1;
-	UINT16 NumLot2;
-	UINT16 NbLot2;
-    char opCode[5];
+       UINT16 numLot1;
+       UINT16 nbLot1;
+       UINT16 numLot2;
+       UINT16 nbLot2;
+       char opCode[5];
 } MsgProdOrd;
 
 typedef struct
 {
-	UINT16 numCom;
-    UINT16 nbT1;
-    UINT16 nbT2;
-    UINT8 noQuai;
-    char dest[10];
+   UINT16 numCom;
+   UINT16 nbT1toBuild;
+   UINT16 nbT2toBuild;
+   UINT8 noQuai;
+   char dest[10];
 } MsgExpOrd;
 
 typedef struct
 {
-    UINT8 errNo;
-	UINT8 reprise;
+   UINT8 errNo;
+   UINT8 reprise;
 } MsgErrSolv;
 
 typedef struct
 {
-    UINT8 errNo;
+   UINT8 errNo;
 } MsgErrSign;
+
 
 typedef struct
 {
-    UINT8 numCom;
-    UINT8 reussite;
+   UINT8 numCom;
+   UINT8 reussite;
 } MsgExpRes;
 
+typedef struct
+{
+   UINT16 numLot;
+} MsgPalPleine;
+
+#define PROTO_PORT 9002
+#define PROTO_ADDR "127.0.0.1"
 
 #ifdef __cplusplus
- }
- #endif
+}
+#endif
 
 #endif /* CIAIPROTOCOL_H */
+

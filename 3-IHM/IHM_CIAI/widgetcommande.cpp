@@ -14,8 +14,8 @@ WidgetCommande::WidgetCommande(unsigned int numCom, unsigned int nNbT1,
     m_ui->nNbT2->setText(QString::number(nNbT2));
 
     commande.numCom = numCom;
-    commande.nbT1 = nNbT1;
-    commande.nbT2 = nNbT2;
+    commande.nbT1toBuild = nNbT1;
+    commande.nbT2toBuild = nNbT2;
     commande.noQuai = noQuai;
     strcpy(commande.dest,dest);
 }
