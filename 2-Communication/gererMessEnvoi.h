@@ -5,9 +5,6 @@
 
 #include "protocole.h"
 
-#define FAIL(x) if(x == -1) {\
-perror(#x);}
-
 int gererMessEnvoi(MSG_Q_ID balEnvoi, MSG_Q_ID balJournal, MSG_Q_ID balMessages);
 
 #endif //MESSENV

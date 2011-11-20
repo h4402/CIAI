@@ -1,6 +1,8 @@
 #if ! defined ( MESSREC_H_ )
 #define MESSREC_H_
 
+#include "common.h"
+
 #define FAIL(x) if(x == -1) {\
 perror(#x);}
 

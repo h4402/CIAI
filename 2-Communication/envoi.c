@@ -1,12 +1,16 @@
 #include "envoi.h"
 
+/* ###### Tache d'envoi des messages coté serveur vers coté client ###### */
+
 int envoi(MSG_Q_ID balEnvoi, int sock)
 {
 	char buff[SIZE_BUFF];
 	int nb, nbSent, total;
-
+	char* sending = (char *) buff[0];
+	
 	for(;;)
 	{
+		/* Recuperation des messages de la boite au lettre "Envoi" */
 		nb = msgQReceive(balEnvoi, buff, SIZE_BUFF, WAIT_FOREVER);
 		FAIL(nb)
 		
@@ -14,10 +18,11 @@ int envoi(MSG_Q_ID balEnvoi, int sock)
 		nbSent = 0;
 		while(nbSent < total)
 		{
-			nb = send(sock, buff, nb, 0);
+			/* Envoi du message vers l'IHM*/
+			nb = send(sock, sending, nb, 0);
 			FAIL(nb)
 			nbSent += nb;
-			buff += nb;
+			sending += nb;
 		}
 		puts("sent");
 	}

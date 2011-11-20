@@ -1,5 +1,7 @@
 #include "reception.h"
 
+/* ###### Tache de reception des messages coté serveur depuis le coté client ###### */
+
 int reception(MSG_Q_ID balReception, int sock)
 {
 	char buff[32];
@@ -13,14 +15,17 @@ int reception(MSG_Q_ID balReception, int sock)
 	
 	for(;;)
 	{
+		/* Reception du message de l'IHM */
 		nb = recv(sock, buff, 32, 0);
 		FAIL(nb)
 		total += nb;
 		
-		if(nb >= 1 && init == 0)/*Si on a assez de données on lit le type du message*/
+		/* Si on a assez de données, on lit le type du message */
+		if(nb >= 1 && init == 0)
 		{
 			type = (UINT8)buff[1];
-			switch(type)/*On connait le type du message on défini la taille du message*/
+			/* On connait le type du message et on défini la taille du message */
+			switch(type)
 			{
 				case 1:
 					messSize = sizeof(MessConfig)+1);
@@ -39,6 +44,7 @@ int reception(MSG_Q_ID balReception, int sock)
 		if(messSize != 0 && total = messSize)/*Si le message est complet on envoie dans la bonne BAL*/
 		{
 			puts("recv");
+			/* Envoi du message dans la boite au lettre "Reception" */
 			FAIL(msgQSend(balReception, buff, total, WAIT_FOREVER, MSG_PRI_NORMAL))
 			total = 0;
 			messSize = 0;

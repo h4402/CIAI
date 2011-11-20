@@ -23,7 +23,7 @@ ERR_ABS_PALETTE,
 ERR_FILE_CARTONS,
 ERR_AU,
 ERR_NOT_ENOUGHT,
-ERR_PASTIQ
+ERR_PLASTIQ
 }errorsType;/* Sera caste en UINT8 */
 
 typedef enum {
@@ -49,16 +49,16 @@ typedef struct
 
 typedef struct
 {
-       UINT16 NumLot1;
-       UINT16 NbLot1;
-       UINT16 NumLot2;
-       UINT16 NbLot2;
-   char opCode[5];
+       UINT16 numLot1;
+       UINT16 nbLot1;
+       UINT16 numLot2;
+       UINT16 nbLot2;
+       char opCode[5];
 } MsgProdOrd;
 
 typedef struct
 {
-       UINT16 numCom;
+   UINT16 numCom;
    UINT16 nbT1;
    UINT16 nbT2;
    UINT8 noQuai;
@@ -68,7 +68,7 @@ typedef struct
 typedef struct
 {
    UINT8 errNo;
-       UINT8 reprise;
+   UINT8 reprise;
 } MsgErrSolv;
 
 typedef struct
@@ -83,7 +83,16 @@ typedef struct
    UINT8 reussite;
 } MsgExpRes;
 
+typedef struct
+{
+   UINT8 numLot;
+} MsgPalPleine;
 
+#define FAIL(x) if(x == -1) {\
+perror(#x);}
+
+#define PROTO_PORT 9002
+#define PROTO_ADDR "127.0.0.1"
 
 #ifdef __cplusplus
 }
