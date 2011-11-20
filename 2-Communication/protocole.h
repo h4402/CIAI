@@ -85,7 +85,7 @@ typedef struct
 
 typedef struct
 {
-   UINT8 numLot;
+   UINT16 numLot;
 } MsgPalPleine;
 
 #define FAIL(x) if(x == -1) {\
