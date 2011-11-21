@@ -9,13 +9,15 @@ SOURCES += main.cpp \
     fencommande.cpp \
     fenconfig.cpp \
     communication.cpp \
-    widgetcommande.cpp
+    widgetcommande.cpp \
+    fenerreur.cpp
 HEADERS += fenprincipale.h \
     fencommande.h \
     fenconfig.h \
     communication.h \
     ciaiProtocol.h \
-    widgetcommande.h
+    widgetcommande.h \
+    fenerreur.h
 FORMS += fenprincipale.ui \
     fencommande.ui \
     fenconfig.ui \

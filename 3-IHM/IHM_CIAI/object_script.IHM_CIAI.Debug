@@ -5,9 +5,12 @@ INPUT(
 ./debug/fenconfig.o
 ./debug/communication.o
 ./debug/widgetcommande.o
+./debug/fenerreur.o
 ./debug/moc_fenprincipale.o
 ./debug/moc_fencommande.o
 ./debug/moc_fenconfig.o
+./debug/moc_communication.o
 ./debug/moc_widgetcommande.o
+./debug/moc_fenerreur.o
 ./debug/qrc_ressources.o
 );

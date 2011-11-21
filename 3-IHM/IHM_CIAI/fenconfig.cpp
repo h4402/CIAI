@@ -3,8 +3,7 @@
 
 FenConfig::FenConfig(int nbT1, int nbT2, QWidget *parent) :
     QWidget(parent),
-    m_ui(new Ui::FenConfig),
-    wPrincipale(principale)
+    m_ui(new Ui::FenConfig)
 {
     m_ui->setupUi(this);
     m_ui->nNbT1->setValue(nbT1);

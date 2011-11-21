@@ -4,6 +4,7 @@
 #include "widgetcommande.h"
 #include "ui_fenprincipale.h"
 #include "communication.h"
+#include "fenerreur.h"
 
 FenPrincipale::FenPrincipale(QWidget *parent)
     : QWidget(parent), ui(new Ui::FenPrincipale),nbT1toBuild(0),nbT2toBuild(0),cannal(new Communication(PROTO_ADDR,this,PROTO_PORT))
@@ -61,7 +62,7 @@ void FenPrincipale::ajouterCommande(int nNbT1, int nNbT2, int nbQuai, QString de
 
 void FenPrincipale::configurerProduction()
 {
-    FenConfig *wConfig = new FenConfig(this, this->nbT1toBuild, this->nbT2toBuild);
+    FenConfig *wConfig = new FenConfig(this->nbT1toBuild, this->nbT2toBuild);
     wConfig->show();
 }
 
@@ -81,7 +82,9 @@ void FenPrincipale::ecrireLog(QString toLog)
 
 void FenPrincipale::gererErreur(errorsType numErr)
 {
-
+    FenErreur * erreur = new FenErreur(numErr,this);
+    connect(erreur,SIGNAL(traiterErreur(errorsType,bool)),
+            this,SIGNAL(traiterErreur(errorsType,bool)));
 }
 
 void FenPrincipale::updateEtatCommande(quint16 numCommande, bool expediee)
