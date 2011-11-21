@@ -5,9 +5,12 @@ INPUT(
 ./release/fenconfig.o
 ./release/communication.o
 ./release/widgetcommande.o
+./release/fenerreur.o
 ./release/moc_fenprincipale.o
 ./release/moc_fencommande.o
 ./release/moc_fenconfig.o
+./release/moc_communication.o
 ./release/moc_widgetcommande.o
+./release/moc_fenerreur.o
 ./release/qrc_ressources.o
 );
