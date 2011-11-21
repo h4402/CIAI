@@ -11,7 +11,7 @@
  */
 /**
  * Pour le cas d'erreur, si on reprend comme prévu, tout est bon,
- * si on doit jeter le carton, alors on doit mettre un booléen a vrai,
+ * si on doit jeter le carton, alors on doit mettre un booleen a vrai,
  * sortir de la boucle qui remplir le carton, ne pas effectuer les
  * truc pour la fin de carton, décrémenter i, puis reprendre en début de boucle.
  */
@@ -22,10 +22,18 @@ void taskRempCart()
 	MsgErrSign err;
 	MsgFin msg;
 	int i;
+	int nbCarton = 0;
+	int nbCartonMax;
 	
-	semTake(SemInitProd);
+	semTake(SemInitProd, WAIT_FOREVER);
 	nbCartonMax = nbProd.nbCartonParPalette*nbProd.nbPalettes1 + nbProd.nbCartonParPalette*nbProd.nbPalettes2;
 	semGive(SemInitProd);
+	
+	/* 
+	 * TODO : lire l'état de l'imprimante ?
+	 * TODO : Envoyer une erreur si elle est en panne.
+	 */
+
 	
 	/* Boucle qui va remplir le bon nombre de cartons. */
 	for (i = 0; i < nbCartonMax; i++) 
@@ -99,7 +107,7 @@ void taskRempCart()
 		
 		/* On fini l'étiquette. */
 		c.temps = time(NULL);
-		if(nbCarton <= nbProd.nbCartonParPalette*nbProd.nbPalettes1)
+		if (nbCarton <= nbProd.nbCartonParPalette*nbProd.nbPalettes1)
 		{
 			c.type = Piece_1;
 			c.numLot = nbProd.numLot1;
@@ -185,7 +193,7 @@ void taskRempPal()
 
 		/* La palette est faite */
 		
-		/* On créé un message. */
+		/* On crée un message. */
 		msg.paletteOuCarton = PALETTE;
 		msg.temps = time(NULL);
 		
@@ -209,7 +217,7 @@ void taskRempPal()
 		nbCarton = 0;
 		
 	}
-	/* Toutes les palettes sont finis, on dit qu'on a terminé l'appli. */
+	/* Toutes les palettes sont finies, on dit qu'on a terminé l'appli. */
 	semGive(SemFinProd);
 }
 

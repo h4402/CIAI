@@ -23,7 +23,7 @@ void handlerCapteurDim(Dimension dim)
 }
 
 /**
- * L'arret d'urgence est terminée.
+ * L'arret d'urgence est termine.
  */
 void handlerArretUrgence()
 {

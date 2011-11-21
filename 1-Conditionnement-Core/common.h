@@ -11,7 +11,7 @@
 #include <stdlib.h>
 
 /**
- * Taille des pi�ces.
+ * Taille des pieces.
  */
 #define X 5
 #define Y 5
@@ -35,7 +35,7 @@
 #define TEMPS_ENTRE_PALETTE 10
 #define TEMPS_ENTRE_PIECE 10
 
-/* Priorit� de chaque tache */
+/* Priorite de chaque tache */
 #define PRIO_REMPLIR_CARTON DEFAULT_PRIO
 #define PRIO_PRESENCE_CARTON DEFAULT_PRIO
 #define PRIO_PRESENCE_PALETTE DEFAULT_PRIO
@@ -63,13 +63,13 @@
 
 
 /**
- * D�finitions de types.
+ * Definitions de types.
  */
 #define Boolean int
 
 /**
  * Structures de Boites aux Lettres
- * et de toutes les donn�es manipul�es.
+ * et de toutes les donnees manipulees.
  */
 
 /**
@@ -88,7 +88,7 @@ typedef enum {
 }errorsType;/* Sera caste en UINT8 */
 
 /**
- * Message de r�ussites.
+ * Message de succes.
  */
 typedef enum {
 	MSG_UNKNOWN,
@@ -99,9 +99,9 @@ typedef enum {
 	MSG_ERR_SIGN,
 	MSG_PAL_PLEINE,
 	MSG_EXP_RES,
-	MSG_END_OF_PROD,/* Pas de datagramme associee */
-	MSG_CART_PLUS, /*Carton plein*/
-	MSG_CART_MOINS /*Carton sur palette*/
+	MSG_END_OF_PROD,/* Pas de datagramme associe */
+	MSG_CART_PLUS, /* Carton plein */
+	MSG_CART_MOINS /* Carton sur palette */
 }msgTypes;/* Sera caste en UINT8 */
  
 typedef enum {
@@ -170,7 +170,7 @@ typedef struct {
 } NbPal;
 
 /**
- * Zone de m�moire partag�es.
+ * Zone de memoire partagees.
  */
 static int LongFileAttente;
 
@@ -181,14 +181,11 @@ static Prod nbProd;
 static NbPal nbPal; 
 
 /**
- * Constantes pratiques pour param�trer le programme.
+ * Constantes pratiques pour parametrer le programme.
  */
 
 /**
- * S�maphores partag�s.
- * Ces s�maphores sont globaux car ils sont utilis�s
- * par des proc�dures qui peuvent �tre appel�es par
- * toutes les taches, nous ne les passons donc pas en param�tres.
+ * Memoires partagees globales
  */
 
 MSG_Q_ID BalPresPie;
@@ -202,10 +199,10 @@ MSG_Q_ID BalPresPal;
 MSG_Q_ID BalImp;
 
 /**
- * S�maphores partag�s.
- * Ces s�maphores sont globaux car ils sont utilis�s
- * par des proc�dures qui peuvent �tre appel�es par
- * toutes les taches, nous ne les passons donc pas en param�tres.
+ * Semaphores partages.
+ * Ces semaphores sont globaux car ils sont utilises
+ * par des procedures qui peuvent etre appelees par
+ * toutes les taches, nous ne les passons donc pas en parametres.
  */
 SEM_ID SemErrTraitee;
 

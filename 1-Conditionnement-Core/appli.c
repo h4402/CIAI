@@ -3,7 +3,7 @@
 #include "TacheSimu.h"
 #include "TacheReelles.h"
 
-/* TODO: Boite aux lettre des messages logs
+/* TODO: Boite aux lettres des messages logs
  *       Morceaux AnaBenj
  * 		 Attente
  *       Gérer prio
@@ -32,17 +32,17 @@ int appli() {
 	
 	/* =========================== Simulation ======================== */
 	
-	/* Simulation de Présence Carton */
+	/* Simulation de Présence Cartons */
 	SemPresCart = semCCreate(SEM_Q_FIFO, 0);
 	idPresCart = taskSpawn("presenceCarton", PRIO_PRESENCE_CARTON, 0, STACK_PRESENCE_CARTON,
 			(FUNCPTR)taskPresCarton,TEMPS_ENTRE_CARTON, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	
-	/* Simulation de Présence Palette */
+	/* Simulation de Présence Palettes */
 	SemPresPal = semCCreate(SEM_Q_FIFO, 0);
 	idPresPal = taskSpawn("presencePalette", PRIO_PRESENCE_PALETTE, 0, STACK_PRESENCE_PALETTE,
 			(FUNCPTR)taskPresPalette, TEMPS_ENTRE_PALETTE, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	
-	/* Simulation de l'envoi de pièce au capteur dimensionnel */
+	/* Simulation de l'envoi de pièces au capteur dimensionnel */
 	BalPresPie = msgQCreate(MAX_PRESENCE_PIECE, sizeof(Piece), MSG_Q_FIFO);
 	idPresPie = taskSpawn("presencePiece", PRIO_PRESENCE_PIECE, 0, STACK_PRESENCE_PIECE,
 			(FUNCPTR)taskPresPiece, DEFAULT_PROBA_PIECE_DEFECT_SUR_1000, TEMPS_ENTRE_PIECE, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -77,14 +77,14 @@ int appli() {
 	 
 	/* ######################## Phase d'attente ########################*/
 	 
-		semTake(SemFinProd, WAIT_FOREVER);
+	semTake(SemFinProd, WAIT_FOREVER);
 	
 	/* ######################## Phase de suppression ########################*/
 	
 	taskDelete(idGestArrUrg);
 	taskDelete(idGestErr);
 	
-	/* Normalement ces deux taches sont déjà finis... */
+	/* Normalement ces deux taches sont déjà finies... */
 	taskDelete(idRempPal);
 	taskDelete(idRempCart);
 	

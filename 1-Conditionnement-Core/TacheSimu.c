@@ -17,22 +17,23 @@ void taskPresPiece(int probaSurMille, int tempsEntrePiece)
 	srand(time(NULL));/*placing a new seed for random generation*/
 	
 	
-	
 	for(;;) 
 	{
-		/*im going to asume that probaSurMille means that, if we have probaSUrMille = 5, every 5 good pieces*/
-		/*we have a wrong one*/
+		/* im going to asume that probaSurMille means that, if we have probaSUrMille = 5, every 5 good pieces*
+		 * we have a wrong one
+		 */
 		generatedNumber = rand() % 100000;/*i dont know how many times the for its gonna be executed, so i put
 		a large amount of random numbers*/
 		
 		if(generatedNumber % probaSurMille == 0){/* bad piece :( */
 			Dimension dim = {X+4,Y+2,Z+3}; /*doesnt matter*/
+			handlerCapteurDim(dim);
 		}
 		else{/* good piece :) */
 			Dimension dim = {X,Y,Z};	
+			handlerCapteurDim(dim);
 		}
 		
-		handlerCapteurDim(dim);
 		taskDelay(sysClkRateGet()*tempsEntrePiece);
 	}
 }

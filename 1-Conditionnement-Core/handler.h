@@ -4,13 +4,13 @@
 #include "common.h"
 
 /**
- * Vérifie les dimensions d'une pièce 
- * et l'envoi à remplirCarton.
+ * Verifie les dimensions d'une piece 
+ * et l'envoi a remplirCarton.
  */
 void handlerCapteurDim(Dimension dim);
 
 /**
- * L'arret d'urgence est terminée.
+ * L'arret d'urgence est termine.
  */
 void handlerArretUrgence();
 
